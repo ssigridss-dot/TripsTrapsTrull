@@ -21,7 +21,7 @@ namespace TripsTrapsTrull
             Label rules = new Label
             {
                 Text =
-                    "Mängureeglid\n\n" +
+                    "Mängureeglid:\n\n" +
 
                     "1. Mäng toimub kahe mängija vahel.\n\n" +
 

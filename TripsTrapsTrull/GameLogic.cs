@@ -21,10 +21,8 @@ namespace TripsTrapsTrull
             Board = new string?[BoardSize, BoardSize];
         }
 
+        /// Uue mängu alustamine.
 
-        /// <summary>
-        /// Alustab uue mängu.
-        /// </summary>
         public void Reset(string starter)
         {
             Board = new string?[BoardSize, BoardSize];
@@ -32,10 +30,8 @@ namespace TripsTrapsTrull
             CurrentPlayer = starter;
         }
 
+        /// Käikude tegemine.
 
-        /// <summary>
-        /// Teeb käigu valitud lahtrisse.
-        /// </summary>
         public bool MakeMove(int row, int column)
         {
             if (row < 0 ||
@@ -56,10 +52,8 @@ namespace TripsTrapsTrull
             return true;
         }
 
-
-        /// <summary>
         /// Vahetab mängijat.
-        /// </summary>
+
         public void SwitchPlayer()
         {
             if (CurrentPlayer == "X")
@@ -72,19 +66,13 @@ namespace TripsTrapsTrull
             }
         }
 
-
-        /// <summary>
         /// Kontrollib, kas praegune mängija võitis.
-        /// </summary>
         public bool CheckWinner()
         {
             return CheckWinner(CurrentPlayer);
         }
 
-
-        /// <summary>
         /// Kontrollib kindla mängija võitu.
-        /// </summary>
         public bool CheckWinner(string player)
         {
             int[,] directions =
@@ -211,10 +199,7 @@ namespace TripsTrapsTrull
             return new List<(int Row, int Column)>();
         }
 
-
-        /// <summary>
         /// Kontrollib, kas kõik lahtrid on täidetud.
-        /// </summary>
         public bool IsDraw()
         {
             for (int row = 0; row < BoardSize; row++)
@@ -231,12 +216,9 @@ namespace TripsTrapsTrull
             return true;
         }
 
-
-        /// <summary>
         /// Leiab botile sobiva käigu.
         /// Bot proovib kõigepealt võita,
         /// seejärel vastase käiku blokeerida.
-        /// </summary>
         public (int Row, int Column) GetBotMove()
         {
             string botPlayer = CurrentPlayer;
@@ -308,10 +290,7 @@ namespace TripsTrapsTrull
             return (-1, -1);
         }
 
-
-        /// <summary>
         /// Leiab käigu, millega antud mängija saaks võita.
-        /// </summary>
         private (int Row, int Column)? FindWinningMove(string player)
         {
             for (int row = 0; row < BoardSize; row++)
