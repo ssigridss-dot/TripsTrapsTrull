@@ -6,28 +6,24 @@ namespace TripsTrapsTrull
     {
         private GameSettings settings;
 
-
         public SettingsPage(GameSettings settings)
         {
             this.settings = settings;
 
-            Title = "Seaded";
-
+            
 
             Label title = new Label
             {
-                Text = "⚙ Seaded",
+                Text = "Seaded",
                 FontSize = 30,
                 FontAttributes = FontAttributes.Bold,
                 HorizontalOptions = LayoutOptions.Center
             };
 
-
             Button themeButton = new Button
             {
                 Text = "Vali hele/tume teema"
             };
-
 
             themeButton.Clicked += async (sender, e) =>
             {
@@ -39,29 +35,26 @@ namespace TripsTrapsTrull
                         "Hele",
                         "Tume");
 
-
                 if (result == "Hele")
                 {
                     settings.DarkTheme = false;
-
-                    Application.Current!.UserAppTheme =
-                        AppTheme.Light;
+                    settings.BackgroundColor = "#FAF7F2"; // Vaikimisi hele taust
+                    Application.Current!.UserAppTheme = AppTheme.Light;
                 }
                 else if (result == "Tume")
                 {
                     settings.DarkTheme = true;
-
-                    Application.Current!.UserAppTheme =
-                        AppTheme.Dark;
+                    settings.BackgroundColor = "#1E1E1E"; // Tume taust
+                    Application.Current!.UserAppTheme = AppTheme.Dark;
                 }
-            };
 
+                BackgroundColor = Color.FromArgb(settings.BackgroundColor);
+            };
 
             Button backgroundButton = new Button
             {
                 Text = "Vali taust"
             };
-
 
             backgroundButton.Clicked += async (sender, e) =>
             {
@@ -74,7 +67,6 @@ namespace TripsTrapsTrull
                         "Heleroosa",
                         "Heleroheline",
                         "Helesinine");
-
 
                 if (result == "Hele")
                 {
@@ -98,18 +90,15 @@ namespace TripsTrapsTrull
                         settings.BackgroundColor);
             };
 
-
             Button backButton = new Button
             {
                 Text = "Salvesta ja tagasi"
             };
 
-
             backButton.Clicked += async (sender, e) =>
             {
                 await Navigation.PopAsync();
             };
-
 
             VerticalStackLayout layout =
                 new VerticalStackLayout
@@ -125,7 +114,6 @@ namespace TripsTrapsTrull
                         backButton
                     }
                 };
-
 
             Content = layout;
 

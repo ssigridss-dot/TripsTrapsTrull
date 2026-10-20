@@ -6,12 +6,12 @@ namespace TripsTrapsTrull
     {
         public RulesPage()
         {
-            Title = "Mängureeglid";
+            
 
 
             Label title = new Label
             {
-                Text = "Trips-Traps-Trull",
+                Text = "Mängureeglid",
                 FontSize = 30,
                 FontAttributes = FontAttributes.Bold,
                 HorizontalOptions = LayoutOptions.Center
@@ -21,7 +21,7 @@ namespace TripsTrapsTrull
             Label rules = new Label
             {
                 Text =
-                    "Mängureeglid:\n\n" +
+                    //"Mängureeglid:\n\n" +
 
                     "1. Mäng toimub kahe mängija vahel.\n\n" +
 
