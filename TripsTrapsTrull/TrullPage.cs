@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Maui.Controls;
-
-namespace TripsTrapsTrull
+﻿namespace TripsTrapsTrull
 {
     public class TrullPage : ContentPage
     {
@@ -22,15 +18,8 @@ namespace TripsTrapsTrull
         public TrullPage()
         {
             settings = new GameSettings();
-
-            game = new GameLogic(
-                settings.BoardSize);
-
-            gameButtons = new Button[
-                settings.BoardSize,
-                settings.BoardSize];
-
-            
+            game = new GameLogic(settings.BoardSize);
+            gameButtons = new Button[settings.BoardSize, settings.BoardSize];
 
             BuildPage();
             StartNewGame();
@@ -39,10 +28,9 @@ namespace TripsTrapsTrull
         private void BuildPage()
         {
             Title = "Trips-Traps-Trull";
-            // Ülemine topelt-tiitel on eemaldatud, alles jäi ainult mängu info
+
             playerLabel = new Label
             {
-
                 Text = "Mängija X kord",
                 FontSize = 22,
                 FontAttributes = FontAttributes.Bold,
@@ -58,8 +46,7 @@ namespace TripsTrapsTrull
 
             gameGrid = Tee_grid3X3();
 
-            winningLineDrawable =
-                new WinningLineDrawable();
+            winningLineDrawable = new WinningLineDrawable();
 
             winningLineView = new GraphicsView
             {
@@ -75,8 +62,10 @@ namespace TripsTrapsTrull
 
             boardContainer = new Grid
             {
-                WidthRequest = 330,
-                HeightRequest = 330,
+                WidthRequest = 340,
+                HeightRequest = 340,
+                Padding = 5,
+                BackgroundColor = Colors.DarkGray,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center
             };
@@ -84,19 +73,18 @@ namespace TripsTrapsTrull
             boardContainer.Add(gameGrid);
             boardContainer.Add(winningLineView);
 
-            VerticalStackLayout layout =
-                new VerticalStackLayout
+            VerticalStackLayout layout = new VerticalStackLayout
+            {
+                Padding = 20,
+                Spacing = 15,
+                Children =
                 {
-                    Padding = 20,
-                    Spacing = 15,
-                    Children =
-                    {
-                        playerLabel,
-                        sizeLabel,
-                        boardContainer,
-                        buttonsGrid
-                    }
-                };
+                    playerLabel,
+                    sizeLabel,
+                    boardContainer,
+                    buttonsGrid
+                }
+            };
 
             ScrollView scrollView = new ScrollView
             {
@@ -114,110 +102,61 @@ namespace TripsTrapsTrull
         {
             buttonsGrid = new Grid
             {
-                ColumnSpacing = 15,
-                RowSpacing = 15
+                ColumnSpacing = 10,
+                RowSpacing = 10,
+                HorizontalOptions = LayoutOptions.Center
             };
 
-            buttonsGrid.ColumnDefinitions.Add(
-                new ColumnDefinition
-                {
-                    Width = new GridLength(1, GridUnitType.Star)
-                });
+            buttonsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
+            buttonsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
 
-            buttonsGrid.ColumnDefinitions.Add(
-                new ColumnDefinition
-                {
-                    Width = new GridLength(1, GridUnitType.Star)
-                });
-
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 5; i++)
             {
-                buttonsGrid.RowDefinitions.Add(
-                    new RowDefinition
-                    {
-                        Height = GridLength.Auto
-                    });
+                buttonsGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             }
 
-            Button newGameButton = new Button
-            {
-                Text = "Uus mäng",
-                FontSize = 17
-            };
-            newGameButton.Clicked += (sender, e) => { StartNewGame(); };
-            buttonsGrid.Add(newGameButton, 0, 0);
+            AddButtonToGrid("Uus mäng", 0, 0, (s, e) => StartNewGame());
+            AddButtonToGrid("Kes alustab?", 0, 1, async (s, e) => await ChooseStarter());
 
-            Button starterButton = new Button
-            {
-                Text = "Kes alustab?",
-                FontSize = 17
-            };
-            starterButton.Clicked += async (sender, e) => { await ChooseStarter(); };
-            buttonsGrid.Add(starterButton, 1, 0);
-
-            Button symbolButton = new Button
-            {
-                Text = "Sümbol/värv",
-                FontSize = 17
-            };
-            symbolButton.Clicked += async (sender, e) => { await ChooseSymbolAndColor(); };
-            buttonsGrid.Add(symbolButton, 2, 0);
+            AddButtonToGrid("Sümbol/värv", 1, 0, async (s, e) => await ChooseSymbolAndColor());
 
             botButton = new Button
             {
                 Text = "Bot: VÄLJAS",
-                FontSize = 17
+                FontSize = 14,
+                HeightRequest = 45
             };
-            botButton.Clicked += async (sender, e) =>
+            botButton.Clicked += async (s, e) =>
             {
                 settings.BotEnabled = !settings.BotEnabled;
                 UpdateBotButton();
                 await StartNewGameAsync();
             };
-            buttonsGrid.Add(botButton, 0, 1);
+            buttonsGrid.Add(botButton, 1, 1);
 
-            Button sizeButton = new Button
-            {
-                Text = "Välja suurus",
-                FontSize = 17
-            };
-            sizeButton.Clicked += async (sender, e) => { await ChooseBoardSize(); };
-            buttonsGrid.Add(sizeButton, 1, 1);
+            AddButtonToGrid("Välja suurus", 2, 0, async (s, e) => await ChooseBoardSize());
+            AddButtonToGrid("Reeglid", 2, 1, async (s, e) => await Navigation.PushAsync(new RulesPage(settings)));
 
-            Button rulesButton = new Button
-            {
-                Text = "Reeglid",
-                FontSize = 17
-            };
-            rulesButton.Clicked += async (sender, e) =>
-            {
-                await Navigation.PushAsync(new RulesPage());
-            };
-            buttonsGrid.Add(rulesButton, 2, 1);
-
-            Button statisticsButton = new Button
-            {
-                Text = "Statistika",
-                FontSize = 17
-            };
-            statisticsButton.Clicked += async (sender, e) =>
-            {
-                await Navigation.PushAsync(new StatisticsPage());
-            };
-            buttonsGrid.Add(statisticsButton, 0, 2);
-
-            Button settingsButton = new Button
-            {
-                Text = "Seaded",
-                FontSize = 17
-            };
-            settingsButton.Clicked += async (sender, e) =>
+            AddButtonToGrid("Statistika", 3, 0, async (s, e) => await Navigation.PushAsync(new StatisticsPage(settings)));
+            AddButtonToGrid("Seaded", 3, 1, async (s, e) =>
             {
                 await Navigation.PushAsync(new SettingsPage(settings));
                 ApplySettings();
                 await StartNewGameAsync();
+            });
+        }
+
+        private void AddButtonToGrid(string text, int row, int column, EventHandler clicked)
+        {
+            Button btn = new Button
+            {
+                Text = text,
+                FontSize = 14,
+                HeightRequest = 45,
+                HorizontalOptions = LayoutOptions.Fill
             };
-            buttonsGrid.Add(settingsButton, 1, 2);
+            btn.Clicked += clicked;
+            buttonsGrid.Add(btn, column, row);
         }
 
         private Grid Tee_grid3X3()
@@ -231,25 +170,17 @@ namespace TripsTrapsTrull
                 HeightRequest = 330,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
-                RowSpacing = 5,
-                ColumnSpacing = 5
+                RowSpacing = 4,
+                ColumnSpacing = 4,
+                BackgroundColor = isDark ? Color.FromArgb("#1E1E1E") : Color.FromArgb("#D0D0D0")
             };
 
             gameButtons = new Button[size, size];
 
             for (int i = 0; i < size; i++)
             {
-                grid.RowDefinitions.Add(
-                    new RowDefinition
-                    {
-                        Height = new GridLength(1, GridUnitType.Star)
-                    });
-
-                grid.ColumnDefinitions.Add(
-                    new ColumnDefinition
-                    {
-                        Width = new GridLength(1, GridUnitType.Star)
-                    });
+                grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             }
 
             for (int r = 0; r < size; r++)
@@ -260,7 +191,6 @@ namespace TripsTrapsTrull
                     {
                         Text = "",
                         FontSize = size == 3 ? 42 : 28,
-                        // Tumeda teema korral ruudud tumedamad, heleda korral valged/kontrastsed
                         BackgroundColor = isDark ? Color.FromArgb("#2D2D2D") : Colors.White,
                         TextColor = isDark ? Colors.White : Colors.Black
                     };
@@ -281,12 +211,9 @@ namespace TripsTrapsTrull
             return grid;
         }
 
-        private async System.Threading.Tasks.Task PlayerMove(int row, int column)
+        private async Task PlayerMove(int row, int column)
         {
-            if (gameOver || (settings.BotEnabled && game.CurrentPlayer == "O"))
-            {
-                return;
-            }
+            if (gameOver || (settings.BotEnabled && game.CurrentPlayer == "O")) return;
 
             bool success = game.MakeMove(row, column);
             if (!success) return;
@@ -304,9 +231,9 @@ namespace TripsTrapsTrull
             }
         }
 
-        private async System.Threading.Tasks.Task BotMove()
+        private async Task BotMove()
         {
-            await System.Threading.Tasks.Task.Delay(400);
+            await Task.Delay(400);
 
             var move = game.GetBotMove();
             if (move.Row < 0) return;
@@ -338,7 +265,7 @@ namespace TripsTrapsTrull
             }
         }
 
-        private async System.Threading.Tasks.Task<bool> CheckGameEnd()
+        private async Task<bool> CheckGameEnd()
         {
             if (game.CheckWinner())
             {
@@ -346,36 +273,22 @@ namespace TripsTrapsTrull
                 DrawWinningLine();
 
                 string symbol = game.CurrentPlayer == "X" ? settings.XSymbol : settings.OSymbol;
-                StatisticsManager.AddWin(game.CurrentPlayer);
+                await StatisticsManager.AddWinAsync(game.CurrentPlayer);
 
-                bool answer = await DisplayAlertAsync(
-                    "Mäng läbi",
-                    symbol + " võitis! Kas soovid veel mängida?",
-                    "Jah",
-                    "Ei");
+                bool answer = await DisplayAlertAsync("Mäng läbi", symbol + " võitis! Kas soovid veel mängida?", "Jah", "Ei");
 
-                if (answer)
-                {
-                    await StartNewGameAsync();
-                }
+                if (answer) await StartNewGameAsync();
                 return true;
             }
 
             if (game.IsDraw())
             {
                 gameOver = true;
-                StatisticsManager.AddDraw();
+                await StatisticsManager.AddDrawAsync();
 
-                bool answer = await DisplayAlertAsync(
-                    "Mäng läbi",
-                    "Mäng jäi viiki! Kas soovid veel mängida?",
-                    "Jah",
-                    "Ei");
+                bool answer = await DisplayAlertAsync("Mäng läbi", "Mäng jäi viiki! Kas soovid veel mängida?", "Jah", "Ei");
 
-                if (answer)
-                {
-                    await StartNewGameAsync();
-                }
+                if (answer) await StartNewGameAsync();
                 return true;
             }
 
@@ -387,7 +300,7 @@ namespace TripsTrapsTrull
             _ = StartNewGameAsync();
         }
 
-        private async System.Threading.Tasks.Task StartNewGameAsync()
+        private async Task StartNewGameAsync()
         {
             gameOver = false;
             winningLineDrawable.IsVisible = false;
@@ -431,52 +344,24 @@ namespace TripsTrapsTrull
 
         private void UpdateBotButton()
         {
-            if (settings.BotEnabled)
+            if (botButton != null)
             {
-                botButton.Text = "Mäng botiga: SEES";
-            }
-            else
-            {
-                botButton.Text = "Mäng botiga: VÄLJAS";
+                botButton.Text = settings.BotEnabled ? "Bot: SEES" : "Bot: VÄLJAS";
             }
         }
 
-        private async System.Threading.Tasks.Task ChooseStarter()
+        private async Task ChooseStarter()
         {
-            string result = await DisplayActionSheetAsync(
-                "Kes alustab?",
-                "Tühista",
-                null,
-                settings.XSymbol,
-                settings.OSymbol,
-                "Juhuslik");
+            string result = await DisplayActionSheetAsync("Kes alustab?", "Tühista", null, settings.XSymbol, settings.OSymbol, "Juhuslik");
 
-            if (result == settings.XSymbol)
-            {
-                settings.Starter = "X";
-                await StartNewGameAsync();
-            }
-            else if (result == settings.OSymbol)
-            {
-                settings.Starter = "O";
-                await StartNewGameAsync();
-            }
-            else if (result == "Juhuslik")
-            {
-                settings.Starter = "Random";
-                await StartNewGameAsync();
-            }
+            if (result == settings.XSymbol) { settings.Starter = "X"; await StartNewGameAsync(); }
+            else if (result == settings.OSymbol) { settings.Starter = "O"; await StartNewGameAsync(); }
+            else if (result == "Juhuslik") { settings.Starter = "Random"; await StartNewGameAsync(); }
         }
 
-        private async System.Threading.Tasks.Task ChooseBoardSize()
+        private async Task ChooseBoardSize()
         {
-            string result = await DisplayActionSheetAsync(
-                "Vali mänguvälja suurus",
-                "Tühista",
-                null,
-                "3 × 3",
-                "4 × 4",
-                "5 × 5");
+            string result = await DisplayActionSheetAsync("Vali mänguvälja suurus", "Tühista", null, "3 × 3", "4 × 4", "5 × 5");
 
             if (result == "3 × 3") settings.BoardSize = 3;
             else if (result == "4 × 4") settings.BoardSize = 4;
@@ -486,75 +371,49 @@ namespace TripsTrapsTrull
             await StartNewGameAsync();
         }
 
-        private async System.Threading.Tasks.Task ChooseSymbolAndColor()
+        private async Task ChooseSymbolAndColor()
         {
-            string symbolResult = await DisplayActionSheetAsync(
-                "Vali sümbolid",
-                "Tühista",
-                null,
-                "X ja O",
-                "♥ ja ○",
-                "★ ja ●");
+            string symbolResult = await DisplayActionSheetAsync("Vali sümbolid", "Tühista", null, "X ja O", "♥ ja ○", "★ ja ●");
 
-            if (symbolResult == "X ja O")
-            {
-                settings.XSymbol = "X";
-                settings.OSymbol = "O";
-            }
-            else if (symbolResult == "♥ ja ○")
-            {
-                settings.XSymbol = "♥";
-                settings.OSymbol = "○";
-            }
-            else if (symbolResult == "★ ja ●")
-            {
-                settings.XSymbol = "★";
-                settings.OSymbol = "●";
-            }
+            if (symbolResult == "X ja O") { settings.XSymbol = "X"; settings.OSymbol = "O"; }
+            else if (symbolResult == "♥ ja ○") { settings.XSymbol = "♥"; settings.OSymbol = "○"; }
+            else if (symbolResult == "★ ja ●") { settings.XSymbol = "★"; settings.OSymbol = "●"; }
             else return;
 
-            string colorResult = await DisplayActionSheetAsync(
-                "Vali värvid",
-                "Tühista",
-                null,
-                "Roosa ja sinine",
-                "Punane ja roheline",
-                "Lilla ja oranž");
+            string colorResult = await DisplayActionSheetAsync("Vali värvid", "Tühista", null, "Roosa ja sinine", "Punane ja roheline", "Lilla ja oranž");
 
-            if (colorResult == "Roosa ja sinine")
-            {
-                settings.XColor = "#D85B7F";
-                settings.OColor = "#4D78C2";
-            }
-            else if (colorResult == "Punane ja roheline")
-            {
-                settings.XColor = "#D64545";
-                settings.OColor = "#45A66F";
-            }
-            else if (colorResult == "Lilla ja oranž")
-            {
-                settings.XColor = "#8057B8";
-                settings.OColor = "#E68A3C";
-            }
+            if (colorResult == "Roosa ja sinine") { settings.XColor = "#D85B7F"; settings.OColor = "#4D78C2"; }
+            else if (colorResult == "Punane ja roheline") { settings.XColor = "#D64545"; settings.OColor = "#45A66F"; }
+            else if (colorResult == "Lilla ja oranž") { settings.XColor = "#8057B8"; settings.OColor = "#E68A3C"; }
 
             await StartNewGameAsync();
         }
 
         private void ApplySettings()
         {
-            // Mängulehe taust võtab seadistatud taustavärvi
-            BackgroundColor = Color.FromArgb(settings.BackgroundColor);
-
             bool isDark = settings.DarkTheme;
-            Color textColor = isDark ? Colors.White : Colors.Black;
-
-            // Tekstid (mängija kord ja välja suurus) kohanduvad automaatselt teemaga
-            if (playerLabel != null) playerLabel.TextColor = textColor;
-            if (sizeLabel != null) sizeLabel.TextColor = textColor;
 
             Application.Current!.UserAppTheme = isDark ? AppTheme.Dark : AppTheme.Light;
 
+            BackgroundColor = isDark ? Color.FromArgb("#121212") : Color.FromArgb("#FAF7F2");
+
+            Color textColor = isDark ? Colors.White : Color.FromArgb("#222222");
+
+            if (playerLabel != null) playerLabel.TextColor = textColor;
+            if (sizeLabel != null) sizeLabel.TextColor = textColor;
+
             UpdateBotButton();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            ApplySettings();
+
+            if (gameGrid != null)
+            {
+                _ = StartNewGameAsync();
+            }
         }
 
         private void DrawWinningLine()
@@ -565,8 +424,7 @@ namespace TripsTrapsTrull
             float boardSize = 330;
             float cellSize = boardSize / size;
 
-            List<(int Row, int Column)> winningCells =
-                game.GetWinningCells(game.CurrentPlayer);
+            List<(int Row, int Column)> winningCells = game.GetWinningCells(game.CurrentPlayer);
 
             if (winningCells.Count == 0) return;
 

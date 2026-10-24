@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TripsTrapsTrull
+﻿namespace TripsTrapsTrull
 {
     public class GameSettings
     {
@@ -11,7 +9,6 @@ namespace TripsTrapsTrull
         public bool BotEnabled { get; set; } = false;
 
         // Kes alustab
-        // X, O või Random
         public string Starter { get; set; } = "X";
 
         // Mängijate sümbolid

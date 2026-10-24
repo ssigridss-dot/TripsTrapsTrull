@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace TripsTrapsTrull
+﻿namespace TripsTrapsTrull
 {
     public class GameLogic
     {
@@ -22,7 +19,6 @@ namespace TripsTrapsTrull
         }
 
         /// Uue mängu alustamine.
-
         public void Reset(string starter)
         {
             Board = new string?[BoardSize, BoardSize];
@@ -31,7 +27,6 @@ namespace TripsTrapsTrull
         }
 
         /// Käikude tegemine.
-
         public bool MakeMove(int row, int column)
         {
             if (row < 0 ||
@@ -53,7 +48,6 @@ namespace TripsTrapsTrull
         }
 
         /// Vahetab mängijat.
-
         public void SwitchPlayer()
         {
             if (CurrentPlayer == "X")
@@ -131,7 +125,7 @@ namespace TripsTrapsTrull
         }
 
         public List<(int Row, int Column)> GetWinningCells(
-    string player)
+        string player)
         {
             int[,] directions =
             {

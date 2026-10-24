@@ -1,115 +1,38 @@
-﻿using Microsoft.Maui.Storage;
-
-namespace TripsTrapsTrull
+﻿namespace TripsTrapsTrull
 {
     public static class StatisticsManager
     {
-        public static int GamesPlayed
+        public static async Task<(int games, int xWins, int oWins, int draws)> GetStatsAsync()
         {
-            get
-            {
-                return Preferences.Default.Get(
-                    "GamesPlayed",
-                    0);
-            }
+            var stats = await DatabaseService.GetStatsAsync();
+            return (stats.GamesPlayed, stats.XWins, stats.OWins, stats.Draws);
         }
 
-
-        public static int XWins
+        public static async Task AddWinAsync(string player)
         {
-            get
-            {
-                return Preferences.Default.Get(
-                    "XWins",
-                    0);
-            }
-        }
-
-
-        public static int OWins
-        {
-            get
-            {
-                return Preferences.Default.Get(
-                    "OWins",
-                    0);
-            }
-        }
-
-
-        public static int Draws
-        {
-            get
-            {
-                return Preferences.Default.Get(
-                    "Draws",
-                    0);
-            }
-        }
-
-
-        public static void AddWin(string player)
-        {
-            int games = GamesPlayed + 1;
-
-            Preferences.Default.Set(
-                "GamesPlayed",
-                games);
-
+            var stats = await DatabaseService.GetStatsAsync();
+            stats.GamesPlayed++;
 
             if (player == "X")
-            {
-                int wins = XWins + 1;
-
-                Preferences.Default.Set(
-                    "XWins",
-                    wins);
-            }
+                stats.XWins++;
             else
-            {
-                int wins = OWins + 1;
+                stats.OWins++;
 
-                Preferences.Default.Set(
-                    "OWins",
-                    wins);
-            }
+            await DatabaseService.SaveStatsAsync(stats);
         }
 
-
-        public static void AddDraw()
+        public static async Task AddDrawAsync()
         {
-            int games = GamesPlayed + 1;
+            var stats = await DatabaseService.GetStatsAsync();
+            stats.GamesPlayed++;
+            stats.Draws++;
 
-            Preferences.Default.Set(
-                "GamesPlayed",
-                games);
-
-
-            int draws = Draws + 1;
-
-            Preferences.Default.Set(
-                "Draws",
-                draws);
+            await DatabaseService.SaveStatsAsync(stats);
         }
 
-
-        public static void Reset()
+        public static async Task ResetAsync()
         {
-            Preferences.Default.Set(
-                "GamesPlayed",
-                0);
-
-            Preferences.Default.Set(
-                "XWins",
-                0);
-
-            Preferences.Default.Set(
-                "OWins",
-                0);
-
-            Preferences.Default.Set(
-                "Draws",
-                0);
+            await DatabaseService.ResetStatsAsync();
         }
     }
 }
