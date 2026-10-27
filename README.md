@@ -20,7 +20,7 @@ Mängu põhiomadused:
     6. Erinevad sümbolite komplektid (X/O, ♥/○, ★/●) ja värvivalikud - mängija saab
         valida endale sobivad sümbolite ja nende värvide kombinatsioonid.
     
-    Kasutatud tehnoloogiad:
+Kasutatud tehnoloogiad:
     Visual Studio (programmeerimisplatvorm)
     C# ja .NET MAUI (multiplatvorm App UI)
     SQLite-net-pcl (kohaliku seadme SQLite andmebaasi haldamiseks)
